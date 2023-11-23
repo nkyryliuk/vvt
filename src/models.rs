@@ -9,7 +9,7 @@ pub struct Character {
     skills: Skills,
     proficiencies: SkillProficiencies,
     inventory: Inventory,
-    hit_points: u32,
+    hit_points: HitPoints,
     armor_class: u32,
 }
 
@@ -67,6 +67,13 @@ impl Character {
             ability.get_modifier()
         }
     }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct HitPoints {
+    current: u32,
+    max: u32,
+    temporary: u32,
 }
 
 pub struct Skills {
@@ -338,7 +345,11 @@ mod tests {
                 survival: Proficiency::Absent,
             },
             inventory: Inventory { items: vec![] },
-            hit_points: 10,
+            hit_points: HitPoints {
+                current: 10,
+                max: 10,
+                temporary: 0,
+            },
             armor_class: 10,
         };
 
@@ -362,7 +373,14 @@ mod tests {
             }
         );
         assert_eq!(character.proficiencies.acrobatics, Proficiency::Absent);
-        assert_eq!(character.hit_points, 10);
+        assert_eq!(
+            character.hit_points,
+            HitPoints {
+                current: 10,
+                max: 10,
+                temporary: 0,
+            }
+        );
         assert_eq!(character.armor_class, 10);
     }
 
@@ -480,7 +498,11 @@ mod tests {
                 survival: Proficiency::Absent,
             },
             inventory: Inventory { items: vec![] },
-            hit_points: 10,
+            hit_points: HitPoints {
+                current: 10,
+                max: 10,
+                temporary: 10,
+            },
             armor_class: 10,
         };
 
