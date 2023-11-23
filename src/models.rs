@@ -18,6 +18,26 @@ impl Character {
         rand::thread_rng().gen_range(1..=20) + ability.get_modifier()
     }
 
+    pub fn skill_check(&self, skill: Skill) -> i32 {
+        let proficiency = match skill.kind {
+            SkillType::Strength => &self.proficiencies.acrobatics,
+            SkillType::Dexterity => &self.proficiencies.animal_handling,
+            SkillType::Constitution => &self.proficiencies.arcana,
+            SkillType::Intelligence => &self.proficiencies.athletics,
+            SkillType::Wisdom => &self.proficiencies.deception,
+            SkillType::Charisma => &self.proficiencies.history,
+        };
+
+        let proficiency_bonus = match proficiency {
+            Proficiency::Absent => 0,
+            Proficiency::Expertise => 2 * self.level as i32,
+            Proficiency::Proficiency => self.level as i32,
+            Proficiency::HalfProficiency => (self.level as f32 / 2.0).floor() as i32,
+        };
+
+        rand::thread_rng().gen_range(1..=20) + skill.value as i32 + proficiency_bonus
+    }
+
     pub fn saving_throw(&self, saving_throw: SavingThrow) -> i32 {
         let ability = match saving_throw {
             SavingThrow::Strength => &self.abilities.strength,
@@ -134,6 +154,22 @@ pub struct ClassDetails {
 
 #[derive(Debug, PartialEq)]
 pub struct Ability {
+    value: u32,
+}
+
+#[derive(Debug, PartialEq)]
+enum SkillType {
+    Strength,
+    Dexterity,
+    Constitution,
+    Intelligence,
+    Wisdom,
+    Charisma,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Skill {
+    kind: SkillType,
     value: u32,
 }
 
