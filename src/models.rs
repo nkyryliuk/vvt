@@ -20,12 +20,24 @@ impl Character {
 
     pub fn skill_check(&self, skill: Skill) -> i32 {
         let proficiency = match skill.kind {
-            SkillType::Strength => &self.proficiencies.acrobatics,
-            SkillType::Dexterity => &self.proficiencies.animal_handling,
-            SkillType::Constitution => &self.proficiencies.arcana,
-            SkillType::Intelligence => &self.proficiencies.athletics,
-            SkillType::Wisdom => &self.proficiencies.deception,
-            SkillType::Charisma => &self.proficiencies.history,
+            SkillType::Acrobatics => &self.proficiencies.acrobatics,
+            SkillType::AnimalHandling => &self.proficiencies.animal_handling,
+            SkillType::Arcana => &self.proficiencies.arcana,
+            SkillType::Athletics => &self.proficiencies.athletics,
+            SkillType::Deception => &self.proficiencies.deception,
+            SkillType::History => &self.proficiencies.history,
+            SkillType::Insight => &self.proficiencies.insight,
+            SkillType::Intimidation => &self.proficiencies.intimidation,
+            SkillType::Investigation => &self.proficiencies.investigation,
+            SkillType::Medicine => &self.proficiencies.medicine,
+            SkillType::Nature => &self.proficiencies.nature,
+            SkillType::Perception => &self.proficiencies.perception,
+            SkillType::Performance => &self.proficiencies.performance,
+            SkillType::Persuasion => &self.proficiencies.persuasion,
+            SkillType::Religion => &self.proficiencies.religion,
+            SkillType::SleightOfHand => &self.proficiencies.sleight_of_hand,
+            SkillType::Stealth => &self.proficiencies.stealth,
+            SkillType::Survival => &self.proficiencies.survival,
         };
 
         let proficiency_bonus = match proficiency {
@@ -58,24 +70,24 @@ impl Character {
 }
 
 pub struct Skills {
-    acrobatics: u32,
-    animal_handling: u32,
-    arcana: u32,
-    athletics: u32,
-    deception: u32,
-    history: u32,
-    insight: u32,
-    intimidation: u32,
-    investigation: u32,
-    medicine: u32,
-    nature: u32,
-    perception: u32,
-    performance: u32,
-    persuasion: u32,
-    religion: u32,
-    sleight_of_hand: u32,
-    stealth: u32,
-    survival: u32,
+    acrobatics: Skill,
+    animal_handling: Skill,
+    arcana: Skill,
+    athletics: Skill,
+    deception: Skill,
+    history: Skill,
+    insight: Skill,
+    intimidation: Skill,
+    investigation: Skill,
+    medicine: Skill,
+    nature: Skill,
+    perception: Skill,
+    performance: Skill,
+    persuasion: Skill,
+    religion: Skill,
+    sleight_of_hand: Skill,
+    stealth: Skill,
+    survival: Skill,
 }
 
 #[derive(Debug, PartialEq)]
@@ -159,12 +171,24 @@ pub struct Ability {
 
 #[derive(Debug, PartialEq)]
 enum SkillType {
-    Strength,
-    Dexterity,
-    Constitution,
-    Intelligence,
-    Wisdom,
-    Charisma,
+    Acrobatics,
+    AnimalHandling,
+    Arcana,
+    Athletics,
+    Deception,
+    History,
+    Insight,
+    Intimidation,
+    Investigation,
+    Medicine,
+    Nature,
+    Perception,
+    Performance,
+    Persuasion,
+    Religion,
+    SleightOfHand,
+    Stealth,
+    Survival,
 }
 
 #[derive(Debug, PartialEq)]
@@ -220,24 +244,78 @@ mod tests {
                 charisma: Ability { value: 10 },
             },
             skills: Skills {
-                acrobatics: 0,
-                animal_handling: 0,
-                arcana: 0,
-                athletics: 0,
-                deception: 0,
-                history: 0,
-                insight: 0,
-                intimidation: 0,
-                investigation: 0,
-                medicine: 0,
-                nature: 0,
-                perception: 0,
-                performance: 0,
-                persuasion: 0,
-                religion: 0,
-                sleight_of_hand: 0,
-                stealth: 0,
-                survival: 0,
+                acrobatics: Skill {
+                    kind: SkillType::Acrobatics,
+                    value: 0,
+                },
+                animal_handling: Skill {
+                    kind: SkillType::AnimalHandling,
+                    value: 0,
+                },
+                arcana: Skill {
+                    kind: SkillType::Arcana,
+                    value: 0,
+                },
+                athletics: Skill {
+                    kind: SkillType::Athletics,
+                    value: 0,
+                },
+                deception: Skill {
+                    kind: SkillType::Deception,
+                    value: 0,
+                },
+                history: Skill {
+                    kind: SkillType::History,
+                    value: 0,
+                },
+                insight: Skill {
+                    kind: SkillType::Insight,
+                    value: 0,
+                },
+                intimidation: Skill {
+                    kind: SkillType::Intimidation,
+                    value: 0,
+                },
+                investigation: Skill {
+                    kind: SkillType::Investigation,
+                    value: 0,
+                },
+                medicine: Skill {
+                    kind: SkillType::Medicine,
+                    value: 0,
+                },
+                nature: Skill {
+                    kind: SkillType::Nature,
+                    value: 0,
+                },
+                perception: Skill {
+                    kind: SkillType::Perception,
+                    value: 0,
+                },
+                performance: Skill {
+                    kind: SkillType::Performance,
+                    value: 0,
+                },
+                persuasion: Skill {
+                    kind: SkillType::Persuasion,
+                    value: 0,
+                },
+                religion: Skill {
+                    kind: SkillType::Religion,
+                    value: 0,
+                },
+                sleight_of_hand: Skill {
+                    kind: SkillType::SleightOfHand,
+                    value: 0,
+                },
+                stealth: Skill {
+                    kind: SkillType::Stealth,
+                    value: 0,
+                },
+                survival: Skill {
+                    kind: SkillType::Survival,
+                    value: 0,
+                },
             },
             proficiencies: SkillProficiencies {
                 acrobatics: Proficiency::Absent,
@@ -276,7 +354,13 @@ mod tests {
         );
         assert_eq!(character.level, 1);
         assert_eq!(character.abilities.strength, Ability { value: 10 });
-        assert_eq!(character.skills.acrobatics, 0);
+        assert_eq!(
+            character.skills.acrobatics,
+            Skill {
+                kind: SkillType::Acrobatics,
+                value: 0
+            }
+        );
         assert_eq!(character.proficiencies.acrobatics, Proficiency::Absent);
         assert_eq!(character.hit_points, 10);
         assert_eq!(character.armor_class, 10);
@@ -302,24 +386,78 @@ mod tests {
                 charisma: Ability { value: 20 },
             },
             skills: Skills {
-                acrobatics: 0,
-                animal_handling: 0,
-                arcana: 0,
-                athletics: 0,
-                deception: 0,
-                history: 0,
-                insight: 0,
-                intimidation: 0,
-                investigation: 0,
-                medicine: 0,
-                nature: 0,
-                perception: 0,
-                performance: 0,
-                persuasion: 0,
-                religion: 0,
-                sleight_of_hand: 0,
-                stealth: 0,
-                survival: 0,
+                acrobatics: Skill {
+                    kind: SkillType::Acrobatics,
+                    value: 0,
+                },
+                animal_handling: Skill {
+                    kind: SkillType::AnimalHandling,
+                    value: 0,
+                },
+                arcana: Skill {
+                    kind: SkillType::Arcana,
+                    value: 0,
+                },
+                athletics: Skill {
+                    kind: SkillType::Athletics,
+                    value: 0,
+                },
+                deception: Skill {
+                    kind: SkillType::Deception,
+                    value: 0,
+                },
+                history: Skill {
+                    kind: SkillType::History,
+                    value: 0,
+                },
+                insight: Skill {
+                    kind: SkillType::Insight,
+                    value: 0,
+                },
+                intimidation: Skill {
+                    kind: SkillType::Intimidation,
+                    value: 0,
+                },
+                investigation: Skill {
+                    kind: SkillType::Investigation,
+                    value: 0,
+                },
+                medicine: Skill {
+                    kind: SkillType::Medicine,
+                    value: 0,
+                },
+                nature: Skill {
+                    kind: SkillType::Nature,
+                    value: 0,
+                },
+                perception: Skill {
+                    kind: SkillType::Perception,
+                    value: 0,
+                },
+                performance: Skill {
+                    kind: SkillType::Performance,
+                    value: 0,
+                },
+                persuasion: Skill {
+                    kind: SkillType::Persuasion,
+                    value: 0,
+                },
+                religion: Skill {
+                    kind: SkillType::Religion,
+                    value: 0,
+                },
+                sleight_of_hand: Skill {
+                    kind: SkillType::SleightOfHand,
+                    value: 0,
+                },
+                stealth: Skill {
+                    kind: SkillType::Stealth,
+                    value: 0,
+                },
+                survival: Skill {
+                    kind: SkillType::Survival,
+                    value: 0,
+                },
             },
             proficiencies: SkillProficiencies {
                 acrobatics: Proficiency::Absent,
