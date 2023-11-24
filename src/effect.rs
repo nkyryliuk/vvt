@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
 use serde_json;
 
+use crate::models::Dice;
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-enum DamageKind {
+pub enum DamageKind {
     Bludgeoning,
     Piercing,
     Slashing,
@@ -19,9 +21,9 @@ enum DamageKind {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-struct Damage {
-    amount: u32,
-    kind: DamageKind,
+pub struct Damage {
+    pub dice: Dice,
+    pub kind: DamageKind,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -86,7 +88,7 @@ struct Buff {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-enum Effect {
+pub enum Effect {
     Damage(Damage),
     Condition(Condition),
     Buff(Buff),
@@ -100,7 +102,7 @@ mod tests {
     #[test]
     fn test_effect_json_serialization() {
         let damage = Damage {
-            amount: 10,
+            dice: Dice { count: 1, sides: 6 },
             kind: DamageKind::Fire,
         };
         let effect_damage = Effect::Damage(damage);

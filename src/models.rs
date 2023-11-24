@@ -1,7 +1,9 @@
 use rand::Rng;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Character {
+    pub id: u32,
     pub name: String,
     pub race: Race,
     pub class: ClassDetails,
@@ -11,7 +13,7 @@ pub struct Character {
     pub proficiencies: SkillProficiencies,
     pub inventory: Inventory,
     pub hit_points: HitPoints,
-    pub armor_class: u32,
+    pub armor_class: i32,
 }
 
 impl Character {
@@ -70,14 +72,41 @@ impl Character {
     }
 }
 
-#[derive(Debug, PartialEq)]
-pub struct HitPoints {
-    pub current: u32,
-    pub max: u32,
-    pub temporary: u32,
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
+pub struct Dice {
+    pub sides: i32,
+    pub count: i32,
 }
 
-#[derive(Debug, PartialEq)]
+pub struct RollResult {
+    pub total: i32,
+    pub rolls: Vec<i32>,
+}
+
+impl Dice {
+    pub fn roll(&self) -> RollResult {
+        let mut rng = rand::thread_rng();
+        let mut rolls = vec![];
+        let mut total = 0;
+
+        for _ in 0..self.count {
+            let roll = rng.gen_range(1..=self.sides);
+            total += roll;
+            rolls.push(roll);
+        }
+
+        RollResult { total, rolls }
+    }
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct HitPoints {
+    pub current: i32,
+    pub max: i32,
+    pub temporary: i32,
+}
+
+#[derive(Debug, PartialEq, Clone)]
 pub struct Skills {
     pub acrobatics: Skill,
     pub animal_handling: Skill,
@@ -99,7 +128,7 @@ pub struct Skills {
     pub survival: Skill,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Proficiency {
     NotProficient,
     Expertise,
@@ -107,7 +136,7 @@ pub enum Proficiency {
     HalfProficient,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct SkillProficiencies {
     pub acrobatics: Proficiency,
     pub animal_handling: Proficiency,
@@ -129,7 +158,7 @@ pub struct SkillProficiencies {
     pub survival: Proficiency,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum SavingThrow {
     Strength,
     Dexterity,
@@ -139,7 +168,7 @@ pub enum SavingThrow {
     Charisma,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Race {
     Human,
     Elf,
@@ -151,7 +180,7 @@ pub enum Race {
     Tiefling,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Class {
     Fighter,
     Wizard,
@@ -167,19 +196,19 @@ pub enum Class {
     Warlock,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct ClassDetails {
     pub name: String,
     pub hit_dice: u32,
     pub saving_throws: Vec<SavingThrow>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Ability {
     pub value: u32,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum SkillType {
     Acrobatics,
     AnimalHandling,
@@ -201,19 +230,19 @@ pub enum SkillType {
     Survival,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Skill {
     pub kind: SkillType,
     pub value: u32,
 }
 
 impl Ability {
-    fn get_modifier(&self) -> i32 {
+    pub fn get_modifier(&self) -> i32 {
         (self.value as i32 - 10) / 2
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Abilities {
     pub strength: Ability,
     pub dexterity: Ability,
@@ -223,12 +252,12 @@ pub struct Abilities {
     pub charisma: Ability,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Inventory {
     pub items: Vec<Item>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Item {
     name: String,
     quantity: u32,
@@ -239,6 +268,7 @@ mod tests {
     #[test]
     fn test_character_creation() {
         let character = Character {
+            id: 1,
             name: String::from("Test Character"),
             race: Race::Human,
             class: ClassDetails {
@@ -395,6 +425,7 @@ mod tests {
     #[test]
     fn test_character_saving_throw() {
         let character = Character {
+            id: 1,
             name: String::from("Test Character"),
             race: Race::Human,
             class: ClassDetails {

@@ -1,5 +1,6 @@
 use crate::state::TerminalInterface;
 
+pub mod actions;
 pub mod effect;
 pub mod models;
 pub mod state;

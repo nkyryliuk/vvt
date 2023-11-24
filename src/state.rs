@@ -1,10 +1,13 @@
 use std::io::{self, Write};
 
-use crate::models::{
-    Abilities, Ability, Character, Class, ClassDetails, HitPoints, Inventory, Proficiency, Race,
-    SavingThrow, Skill, SkillProficiencies, SkillType, Skills,
+use crate::{
+    actions::Action,
+    effect::{DamageKind, Effect},
+    models::{
+        Abilities, Ability, Character, Class, ClassDetails, Dice, HitPoints, Inventory,
+        Proficiency, Race, SavingThrow, Skill, SkillProficiencies, SkillType, Skills,
+    },
 };
-use clap::Parser;
 
 pub struct State {
     characters: Vec<Character>,
@@ -14,6 +17,58 @@ impl State {
     pub fn new() -> Self {
         Self {
             characters: Vec::new(),
+        }
+    }
+
+    pub fn apply_action(&mut self, action: Action) {
+        match action {
+            Action::Attack(attack) => {
+                let attacker = self
+                    .characters
+                    .iter()
+                    .find(|character| character.id == attack.actor_id)
+                    .unwrap();
+
+                let attack_roll = Dice {
+                    count: 1,
+                    sides: 20,
+                }
+                .roll()
+                .total
+                    + attacker.abilities.strength.get_modifier();
+
+                let damage = match attack.effect {
+                    Effect::Damage(damage) => damage,
+                    _ => todo!(),
+                };
+                let total_damage =
+                    damage.dice.roll().total + attacker.abilities.strength.get_modifier();
+
+                let target = self
+                    .characters
+                    .iter_mut()
+                    .find(|character| character.id == attack.target_id)
+                    .unwrap();
+
+                if attack_roll < target.armor_class {
+                    println!("Attack missed!");
+                    return;
+                }
+
+                target.hit_points.current -= total_damage;
+                if target.hit_points.current <= 0 {
+                    target.hit_points.current = 0;
+                }
+            }
+            Action::CastSpell => todo!(),
+            Action::Dash => todo!(),
+            Action::Disengage => todo!(),
+            Action::Dodge => todo!(),
+            Action::Help => todo!(),
+            Action::Hide => todo!(),
+            Action::Ready => todo!(),
+            Action::Search => todo!(),
+            Action::UseObject => todo!(),
         }
     }
 }
@@ -69,7 +124,7 @@ impl TerminalInterface {
         print!("Enter a character hitpoints: ");
         io::stdout().flush().unwrap();
         io::stdin().read_line(&mut hp_input).unwrap();
-        let hp = hp_input.trim().parse::<u32>().unwrap();
+        let hp = hp_input.trim().parse::<i32>().unwrap();
 
         let mut race_input = String::new();
         print!("Enter a character race: (Human, Elf, Dwarf, HalfOrc, Halfling)");
@@ -89,7 +144,7 @@ impl TerminalInterface {
         print!("Enter a character armor class: ");
         io::stdout().flush().unwrap();
         io::stdin().read_line(&mut armor_class_input).unwrap();
-        let armor_class = armor_class_input.trim().parse::<u32>().unwrap();
+        let armor_class = armor_class_input.trim().parse::<i32>().unwrap();
 
         let mut class_input = String::new();
         print!("Enter a character class: (Fighter, Wizard, Rogue, Cleric)");
@@ -457,6 +512,7 @@ impl TerminalInterface {
         }
 
         let character = Character {
+            id: 1,
             name,
             race,
             level,
@@ -479,5 +535,165 @@ impl TerminalInterface {
         for character in &self.state.characters {
             println!("{:#?}", character);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{actions::Attack, effect::Damage, models::Dice};
+
+    use super::*;
+
+    #[test]
+    fn test_apply_action() {
+        let mut state = State::new();
+
+        let attacker = Character {
+            id: 1,
+            name: String::from("Attacker"),
+            abilities: Abilities {
+                strength: Ability { value: 10 },
+                dexterity: Ability { value: 10 },
+                constitution: Ability { value: 10 },
+                intelligence: Ability { value: 10 },
+                wisdom: Ability { value: 10 },
+                charisma: Ability { value: 10 },
+            },
+            race: Race::Human,
+            class: ClassDetails {
+                name: String::from("Fighter"),
+                hit_dice: 10,
+                saving_throws: vec![SavingThrow::Strength, SavingThrow::Constitution],
+            },
+            level: 1,
+            skills: Skills {
+                acrobatics: Skill {
+                    kind: SkillType::Acrobatics,
+                    value: 0,
+                },
+                animal_handling: Skill {
+                    kind: SkillType::AnimalHandling,
+                    value: 0,
+                },
+                arcana: Skill {
+                    kind: SkillType::Arcana,
+                    value: 0,
+                },
+                athletics: Skill {
+                    kind: SkillType::Athletics,
+                    value: 0,
+                },
+                deception: Skill {
+                    kind: SkillType::Deception,
+                    value: 0,
+                },
+                history: Skill {
+                    kind: SkillType::Deception,
+                    value: 0,
+                },
+                insight: Skill {
+                    kind: SkillType::Insight,
+                    value: 0,
+                },
+                intimidation: Skill {
+                    kind: SkillType::Intimidation,
+                    value: 0,
+                },
+                investigation: Skill {
+                    kind: SkillType::Investigation,
+                    value: 0,
+                },
+                medicine: Skill {
+                    kind: SkillType::Medicine,
+                    value: 0,
+                },
+                nature: Skill {
+                    kind: SkillType::Nature,
+                    value: 0,
+                },
+                perception: Skill {
+                    kind: SkillType::Perception,
+                    value: 0,
+                },
+                performance: Skill {
+                    kind: SkillType::Performance,
+                    value: 0,
+                },
+                persuasion: Skill {
+                    kind: SkillType::Persuasion,
+                    value: 0,
+                },
+                religion: Skill {
+                    kind: SkillType::Religion,
+                    value: 0,
+                },
+                sleight_of_hand: Skill {
+                    kind: SkillType::SleightOfHand,
+                    value: 0,
+                },
+                stealth: Skill {
+                    kind: SkillType::Stealth,
+                    value: 0,
+                },
+                survival: Skill {
+                    kind: SkillType::Survival,
+                    value: 0,
+                },
+            },
+            proficiencies: SkillProficiencies {
+                acrobatics: Proficiency::NotProficient,
+                animal_handling: Proficiency::NotProficient,
+                arcana: Proficiency::NotProficient,
+                athletics: Proficiency::NotProficient,
+                deception: Proficiency::NotProficient,
+                history: Proficiency::NotProficient,
+                insight: Proficiency::NotProficient,
+                intimidation: Proficiency::NotProficient,
+                investigation: Proficiency::NotProficient,
+                medicine: Proficiency::NotProficient,
+                nature: Proficiency::NotProficient,
+                perception: Proficiency::NotProficient,
+                performance: Proficiency::NotProficient,
+                persuasion: Proficiency::NotProficient,
+                religion: Proficiency::NotProficient,
+                sleight_of_hand: Proficiency::NotProficient,
+                stealth: Proficiency::NotProficient,
+                survival: Proficiency::NotProficient,
+            },
+            inventory: Inventory { items: Vec::new() },
+            hit_points: HitPoints {
+                current: 10,
+                max: 10,
+                temporary: 10,
+            },
+            armor_class: 10,
+        };
+
+        let mut target = attacker.clone();
+        state.characters.push(attacker);
+
+        target.id = 2;
+        target.name = String::from("Target");
+        state.characters.push(target);
+
+        let damage = Damage {
+            dice: Dice {
+                count: 1,
+                sides: 6, // average roll is 3.5
+            },
+            kind: DamageKind::Slashing,
+        };
+        let action = Action::Attack(Attack {
+            name: String::from("Attack"),
+            actor_id: 1,
+            target_id: 2,
+            effect: Effect::Damage(damage),
+        });
+
+        state.apply_action(action);
+
+        // TODO: this test is brittle because it assumes that attack reached the target
+        let target = state.characters.iter().find(|c| c.id == 2).unwrap();
+        assert!(target.hit_points.current <= target.hit_points.max);
     }
 }
