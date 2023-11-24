@@ -2,7 +2,7 @@ use std::io::{self, Write};
 
 use crate::{
     actions::Action,
-    effect::{DamageKind, Effect},
+    effect::Effect,
     models::{
         Abilities, Ability, Character, Class, ClassDetails, Dice, HitPoints, Inventory,
         Proficiency, Race, SavingThrow, Skill, SkillProficiencies, SkillType, Skills,
@@ -540,7 +540,7 @@ impl TerminalInterface {
 
 #[cfg(test)]
 mod tests {
-    use crate::{actions::Attack, effect::Damage, models::Dice};
+    use crate::{actions::Attack, effect::Damage, effect::DamageKind, models::Dice};
 
     use super::*;
 
