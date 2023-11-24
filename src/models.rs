@@ -1,16 +1,17 @@
 use rand::Rng;
 
+#[derive(Debug, PartialEq)]
 pub struct Character {
-    name: String,
-    race: Race,
-    class: ClassDetails,
-    level: u32,
-    abilities: Abilities,
-    skills: Skills,
-    proficiencies: SkillProficiencies,
-    inventory: Inventory,
-    hit_points: HitPoints,
-    armor_class: u32,
+    pub name: String,
+    pub race: Race,
+    pub class: ClassDetails,
+    pub level: u32,
+    pub abilities: Abilities,
+    pub skills: Skills,
+    pub proficiencies: SkillProficiencies,
+    pub inventory: Inventory,
+    pub hit_points: HitPoints,
+    pub armor_class: u32,
 }
 
 impl Character {
@@ -41,10 +42,10 @@ impl Character {
         };
 
         let proficiency_bonus = match proficiency {
-            Proficiency::Absent => 0,
+            Proficiency::NotProficient => 0,
             Proficiency::Expertise => 2 * self.level as i32,
-            Proficiency::Proficiency => self.level as i32,
-            Proficiency::HalfProficiency => (self.level as f32 / 2.0).floor() as i32,
+            Proficiency::Proficient => self.level as i32,
+            Proficiency::HalfProficient => (self.level as f32 / 2.0).floor() as i32,
         };
 
         rand::thread_rng().gen_range(1..=20) + skill.value as i32 + proficiency_bonus
@@ -71,59 +72,61 @@ impl Character {
 
 #[derive(Debug, PartialEq)]
 pub struct HitPoints {
-    current: u32,
-    max: u32,
-    temporary: u32,
+    pub current: u32,
+    pub max: u32,
+    pub temporary: u32,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Skills {
-    acrobatics: Skill,
-    animal_handling: Skill,
-    arcana: Skill,
-    athletics: Skill,
-    deception: Skill,
-    history: Skill,
-    insight: Skill,
-    intimidation: Skill,
-    investigation: Skill,
-    medicine: Skill,
-    nature: Skill,
-    perception: Skill,
-    performance: Skill,
-    persuasion: Skill,
-    religion: Skill,
-    sleight_of_hand: Skill,
-    stealth: Skill,
-    survival: Skill,
+    pub acrobatics: Skill,
+    pub animal_handling: Skill,
+    pub arcana: Skill,
+    pub athletics: Skill,
+    pub deception: Skill,
+    pub history: Skill,
+    pub insight: Skill,
+    pub intimidation: Skill,
+    pub investigation: Skill,
+    pub medicine: Skill,
+    pub nature: Skill,
+    pub perception: Skill,
+    pub performance: Skill,
+    pub persuasion: Skill,
+    pub religion: Skill,
+    pub sleight_of_hand: Skill,
+    pub stealth: Skill,
+    pub survival: Skill,
 }
 
 #[derive(Debug, PartialEq)]
 pub enum Proficiency {
-    Absent,
+    NotProficient,
     Expertise,
-    Proficiency,
-    HalfProficiency,
+    Proficient,
+    HalfProficient,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct SkillProficiencies {
-    acrobatics: Proficiency,
-    animal_handling: Proficiency,
-    arcana: Proficiency,
-    athletics: Proficiency,
-    deception: Proficiency,
-    history: Proficiency,
-    insight: Proficiency,
-    intimidation: Proficiency,
-    investigation: Proficiency,
-    medicine: Proficiency,
-    nature: Proficiency,
-    perception: Proficiency,
-    performance: Proficiency,
-    persuasion: Proficiency,
-    religion: Proficiency,
-    sleight_of_hand: Proficiency,
-    stealth: Proficiency,
-    survival: Proficiency,
+    pub acrobatics: Proficiency,
+    pub animal_handling: Proficiency,
+    pub arcana: Proficiency,
+    pub athletics: Proficiency,
+    pub deception: Proficiency,
+    pub history: Proficiency,
+    pub insight: Proficiency,
+    pub intimidation: Proficiency,
+    pub investigation: Proficiency,
+    pub medicine: Proficiency,
+    pub nature: Proficiency,
+    pub perception: Proficiency,
+    pub performance: Proficiency,
+    pub persuasion: Proficiency,
+    pub religion: Proficiency,
+    pub sleight_of_hand: Proficiency,
+    pub stealth: Proficiency,
+    pub survival: Proficiency,
 }
 
 #[derive(Debug, PartialEq)]
@@ -166,18 +169,18 @@ pub enum Class {
 
 #[derive(Debug, PartialEq)]
 pub struct ClassDetails {
-    name: String,
-    hit_dice: u32,
-    saving_throws: Vec<SavingThrow>,
+    pub name: String,
+    pub hit_dice: u32,
+    pub saving_throws: Vec<SavingThrow>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct Ability {
-    value: u32,
+    pub value: u32,
 }
 
 #[derive(Debug, PartialEq)]
-enum SkillType {
+pub enum SkillType {
     Acrobatics,
     AnimalHandling,
     Arcana,
@@ -200,8 +203,8 @@ enum SkillType {
 
 #[derive(Debug, PartialEq)]
 pub struct Skill {
-    kind: SkillType,
-    value: u32,
+    pub kind: SkillType,
+    pub value: u32,
 }
 
 impl Ability {
@@ -212,18 +215,20 @@ impl Ability {
 
 #[derive(Debug, PartialEq)]
 pub struct Abilities {
-    strength: Ability,
-    dexterity: Ability,
-    constitution: Ability,
-    intelligence: Ability,
-    wisdom: Ability,
-    charisma: Ability,
+    pub strength: Ability,
+    pub dexterity: Ability,
+    pub constitution: Ability,
+    pub intelligence: Ability,
+    pub wisdom: Ability,
+    pub charisma: Ability,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Inventory {
-    items: Vec<Item>,
+    pub items: Vec<Item>,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Item {
     name: String,
     quantity: u32,
@@ -325,24 +330,24 @@ mod tests {
                 },
             },
             proficiencies: SkillProficiencies {
-                acrobatics: Proficiency::Absent,
-                animal_handling: Proficiency::Absent,
-                arcana: Proficiency::Absent,
-                athletics: Proficiency::Absent,
-                deception: Proficiency::Absent,
-                history: Proficiency::Absent,
-                insight: Proficiency::Absent,
-                intimidation: Proficiency::Absent,
-                investigation: Proficiency::Absent,
-                medicine: Proficiency::Absent,
-                nature: Proficiency::Absent,
-                perception: Proficiency::Absent,
-                performance: Proficiency::Absent,
-                persuasion: Proficiency::Absent,
-                religion: Proficiency::Absent,
-                sleight_of_hand: Proficiency::Absent,
-                stealth: Proficiency::Absent,
-                survival: Proficiency::Absent,
+                acrobatics: Proficiency::NotProficient,
+                animal_handling: Proficiency::NotProficient,
+                arcana: Proficiency::NotProficient,
+                athletics: Proficiency::NotProficient,
+                deception: Proficiency::NotProficient,
+                history: Proficiency::NotProficient,
+                insight: Proficiency::NotProficient,
+                intimidation: Proficiency::NotProficient,
+                investigation: Proficiency::NotProficient,
+                medicine: Proficiency::NotProficient,
+                nature: Proficiency::NotProficient,
+                perception: Proficiency::NotProficient,
+                performance: Proficiency::NotProficient,
+                persuasion: Proficiency::NotProficient,
+                religion: Proficiency::NotProficient,
+                sleight_of_hand: Proficiency::NotProficient,
+                stealth: Proficiency::NotProficient,
+                survival: Proficiency::NotProficient,
             },
             inventory: Inventory { items: vec![] },
             hit_points: HitPoints {
@@ -372,7 +377,10 @@ mod tests {
                 value: 0
             }
         );
-        assert_eq!(character.proficiencies.acrobatics, Proficiency::Absent);
+        assert_eq!(
+            character.proficiencies.acrobatics,
+            Proficiency::NotProficient
+        );
         assert_eq!(
             character.hit_points,
             HitPoints {
@@ -478,24 +486,24 @@ mod tests {
                 },
             },
             proficiencies: SkillProficiencies {
-                acrobatics: Proficiency::Absent,
-                animal_handling: Proficiency::Absent,
-                arcana: Proficiency::Absent,
-                athletics: Proficiency::Absent,
-                deception: Proficiency::Absent,
-                history: Proficiency::Absent,
-                insight: Proficiency::Absent,
-                intimidation: Proficiency::Absent,
-                investigation: Proficiency::Absent,
-                medicine: Proficiency::Absent,
-                nature: Proficiency::Absent,
-                perception: Proficiency::Absent,
-                performance: Proficiency::Absent,
-                persuasion: Proficiency::Absent,
-                religion: Proficiency::Absent,
-                sleight_of_hand: Proficiency::Absent,
-                stealth: Proficiency::Absent,
-                survival: Proficiency::Absent,
+                acrobatics: Proficiency::NotProficient,
+                animal_handling: Proficiency::NotProficient,
+                arcana: Proficiency::NotProficient,
+                athletics: Proficiency::NotProficient,
+                deception: Proficiency::NotProficient,
+                history: Proficiency::NotProficient,
+                insight: Proficiency::NotProficient,
+                intimidation: Proficiency::NotProficient,
+                investigation: Proficiency::NotProficient,
+                medicine: Proficiency::NotProficient,
+                nature: Proficiency::NotProficient,
+                perception: Proficiency::NotProficient,
+                performance: Proficiency::NotProficient,
+                persuasion: Proficiency::NotProficient,
+                religion: Proficiency::NotProficient,
+                sleight_of_hand: Proficiency::NotProficient,
+                stealth: Proficiency::NotProficient,
+                survival: Proficiency::NotProficient,
             },
             inventory: Inventory { items: vec![] },
             hit_points: HitPoints {
