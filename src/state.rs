@@ -612,6 +612,7 @@ impl TerminalInterface {
                 max: hp,
                 temporary: 0,
             },
+            active_effects: Vec::new(),
             inventory: Inventory { items: Vec::new() },
         };
         self.state.characters.push(character);
@@ -637,6 +638,7 @@ mod tests {
         let attacker = Character {
             id: 1,
             name: String::from("Attacker"),
+            active_effects: Vec::new(),
             abilities: Abilities {
                 strength: Ability { value: 10 },
                 dexterity: Ability { value: 10 },

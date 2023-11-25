@@ -1,6 +1,8 @@
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
+use crate::effect::Effect;
+
 #[derive(Debug, PartialEq, Clone)]
 pub struct Character {
     pub id: u32,
@@ -14,6 +16,7 @@ pub struct Character {
     pub inventory: Inventory,
     pub hit_points: HitPoints,
     pub armor_class: i32,
+    pub active_effects: Vec<Effect>,
 }
 
 impl Character {
@@ -276,6 +279,7 @@ mod tests {
                 hit_dice: 10,
                 saving_throws: vec![SavingThrow::Strength, SavingThrow::Constitution],
             },
+            active_effects: vec![],
             level: 1,
             abilities: Abilities {
                 strength: Ability { value: 10 },
@@ -433,6 +437,7 @@ mod tests {
                 hit_dice: 10,
                 saving_throws: vec![SavingThrow::Strength, SavingThrow::Constitution],
             },
+            active_effects: vec![],
             level: 1,
             abilities: Abilities {
                 strength: Ability { value: 10 },
