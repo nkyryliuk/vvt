@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::effect::Effect;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct Attack {
     pub name: String,
     pub actor_id: u32,
@@ -11,7 +11,7 @@ pub struct Attack {
 }
 
 // TODO: Add support for targeting a point on the map. Maybe move target to the effect level?
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum Target {
     Actor(u32),
     Point(f32, f32),
@@ -42,7 +42,7 @@ pub enum Shape {
     Point,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct CastSpell {
     pub name: String,
     pub actor_id: u32,
@@ -51,6 +51,7 @@ pub struct CastSpell {
     pub shape: Shape,
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum Action {
     Attack(Attack),
     CastSpell(CastSpell),
@@ -91,6 +92,10 @@ mod tests {
             effect,
             shape,
         });
+
+        // print json representation of action
+        let serialized_action = serde_json::to_string(&action).unwrap();
+        println!("{}", serialized_action);
 
         assert!(match action {
             Action::CastSpell(_) => true,
