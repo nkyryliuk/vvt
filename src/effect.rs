@@ -46,7 +46,7 @@ enum ConditionKind {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-enum DurationUnit {
+pub enum DurationUnit {
     Rounds,
     Minutes,
     Hours,
@@ -54,26 +54,54 @@ enum DurationUnit {
     Weeks,
     Months,
     Years,
+    Immediate,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-struct Duration {
-    amount: u32,
-    unit: DurationUnit,
+pub struct Duration {
+    pub amount: u32,
+    pub unit: DurationUnit,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-struct Condition {
+pub struct Condition {
     kind: ConditionKind,
     duration: Duration,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-enum BuffKind {
-    Enhancement,
+pub enum EnhancementBuff {
+    Strength,
+    Dexterity,
+    Constitution,
+    Intelligence,
+    Wisdom,
+    Charisma,
+
+    ArmorClass,
+    AttackRoll,
+    DamageRoll,
+    SavingThrow,
+    SkillCheck,
+
+    Speed,
+    Initiative,
+
+    HitPoints,
+    TemporaryHitPoints,
+    HitDice,
+
+    SpellAttackRoll,
+    SpellSaveDC,
+
+    SpellSlots,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum BuffKind {
+    Enhancement(EnhancementBuff),
     Advantage,
     Disadvantage,
-    TemporaryHitPoints,
     BonusAction,
     Reaction,
     Resistance,
@@ -82,9 +110,9 @@ enum BuffKind {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-struct Buff {
-    kind: BuffKind,
-    duration: Duration,
+pub struct Buff {
+    pub kind: BuffKind,
+    pub duration: Duration,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -123,7 +151,7 @@ mod tests {
         assert_eq!(effect_condition, deserialized_condition);
 
         let buff = Buff {
-            kind: BuffKind::Enhancement,
+            kind: BuffKind::Enhancement(EnhancementBuff::Strength),
             duration: Duration {
                 amount: 3,
                 unit: DurationUnit::Minutes,

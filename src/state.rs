@@ -2,7 +2,7 @@ use std::io::{self, Write};
 
 use crate::{
     actions::Action,
-    effect::Effect,
+    effect::{BuffKind, Effect, EnhancementBuff},
     models::{
         Abilities, Ability, Character, Class, ClassDetails, Dice, HitPoints, Inventory,
         Proficiency, Race, SavingThrow, Skill, SkillProficiencies, SkillType, Skills,
@@ -60,7 +60,93 @@ impl State {
                     target.hit_points.current = 0;
                 }
             }
-            Action::CastSpell => todo!(),
+            Action::CastSpell(spell) => {
+                let caster = self
+                    .characters
+                    .iter()
+                    .find(|character| character.id == 1)
+                    .unwrap()
+                    .clone();
+
+                let target = self
+                    .characters
+                    .iter_mut()
+                    .find(|character| character.id == spell.target_id)
+                    .unwrap();
+
+                match spell.effect {
+                    Effect::Damage(damage) => {
+                        let spell_attack_roll = Dice {
+                            count: 1,
+                            sides: 20,
+                        }
+                        .roll()
+                        .total
+                            + caster.abilities.intelligence.get_modifier();
+
+                        if spell_attack_roll < target.armor_class {
+                            println!("Spell attack missed!");
+                            return;
+                        }
+
+                        let total_damage = damage.dice.roll().total;
+                        let target = self
+                            .characters
+                            .iter_mut()
+                            .find(|character| character.id == spell.target_id)
+                            .unwrap();
+                        target.hit_points.current -= total_damage;
+                        if target.hit_points.current <= 0 {
+                            target.hit_points.current = 0;
+                        }
+                    }
+                    Effect::Buff(buff) => match buff.kind {
+                        BuffKind::Enhancement(enhancement) => match enhancement {
+                            EnhancementBuff::Strength => {
+                                target.abilities.strength.value += 2;
+                            }
+                            EnhancementBuff::Dexterity => {
+                                target.abilities.dexterity.value += 2;
+                            }
+                            EnhancementBuff::Constitution => {
+                                target.abilities.constitution.value += 2;
+                            }
+                            EnhancementBuff::Intelligence => {
+                                target.abilities.intelligence.value += 2;
+                            }
+                            EnhancementBuff::Wisdom => {
+                                target.abilities.wisdom.value += 2;
+                            }
+                            EnhancementBuff::Charisma => {
+                                target.abilities.charisma.value += 2;
+                            }
+                            EnhancementBuff::ArmorClass => {
+                                target.armor_class += 2;
+                            }
+                            EnhancementBuff::AttackRoll => {}
+                            EnhancementBuff::DamageRoll => todo!(),
+                            EnhancementBuff::SavingThrow => todo!(),
+                            EnhancementBuff::SkillCheck => todo!(),
+                            EnhancementBuff::Speed => todo!(),
+                            EnhancementBuff::Initiative => todo!(),
+                            EnhancementBuff::HitPoints => todo!(),
+                            EnhancementBuff::HitDice => todo!(),
+                            EnhancementBuff::SpellAttackRoll => todo!(),
+                            EnhancementBuff::SpellSaveDC => todo!(),
+                            EnhancementBuff::SpellSlots => todo!(),
+                            EnhancementBuff::TemporaryHitPoints => todo!(),
+                        },
+                        BuffKind::Advantage => todo!(),
+                        BuffKind::Disadvantage => todo!(),
+                        BuffKind::BonusAction => todo!(),
+                        BuffKind::Reaction => todo!(),
+                        BuffKind::Resistance => todo!(),
+                        BuffKind::Immunity => todo!(),
+                        BuffKind::Vulnerability => todo!(),
+                    },
+                    Effect::Condition(_) => todo!(),
+                }
+            }
             Action::Dash => todo!(),
             Action::Disengage => todo!(),
             Action::Dodge => todo!(),
